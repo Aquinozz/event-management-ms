@@ -42,6 +42,17 @@ public class EventService {
         return eventos.map(this::toResponseDto);
     }
 
+    public Page<EventResponseDto> listarPorCriador(String email, Pageable pageable) {
+        return eventRepository.findByCriadorEmail(email, pageable).map(this::toResponseDto);
+    }
+
+    public Page<EventResponseDto> listarPorCategoria(Long categoriaId, Pageable pageable) {
+        if (!categoryRepository.existsById(categoriaId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
+        }
+        return eventRepository.filtrar(categoriaId, null, null, null, null, pageable).map(this::toResponseDto);
+    }
+
     public EventResponseDto buscarPorId(Long id) {
         log.info("Buscando evento por ID: {}", id);
         Event event = eventRepository.findById(id)

@@ -45,6 +45,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/events/*/participantes/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/events/*/inscrever").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/events/me").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/events/**", "/categories/**").permitAll()
                                 .requestMatchers("/categories/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()

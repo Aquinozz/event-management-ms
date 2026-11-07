@@ -46,6 +46,13 @@ public class EventController {
         return ResponseEntity.ok(eventos);
     }
 
+    @Operation(summary = "Listar eventos criados pelo usuário logado")
+    @GetMapping("/me")
+    public ResponseEntity<Page<EventResponseDto>> meusEventos(@PageableDefault(size = 10) Pageable pageable,
+                                                             Authentication authentication) {
+        return ResponseEntity.ok(eventService.listarPorCriador(authentication.getName(), pageable));
+    }
+
     @Operation(summary = "Buscar evento por ID")
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDto> buscarPorId(@PathVariable Long id) {

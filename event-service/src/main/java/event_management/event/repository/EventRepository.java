@@ -32,5 +32,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             Pageable pageable
     );
 
+    Page<Event> findByCriadorEmail(String criadorEmail, Pageable pageable);
+
     List<Event> findByDataHoraBeforeAndStatusNot(LocalDateTime data, EventStatus status);
 }
