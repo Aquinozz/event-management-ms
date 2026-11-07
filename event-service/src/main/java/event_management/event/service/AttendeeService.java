@@ -24,6 +24,7 @@ public class AttendeeService {
 
     private final AttendeeRepository attendeeRepository;
     private final EventRepository eventRepository;
+    private final NotificationPublisher notificationPublisher;
 
     public List<AttendeeResponseDto> listarPorEvento(Long eventoId) {
         log.info("Listando participantes do evento ID: {}", eventoId);
@@ -70,6 +71,7 @@ public class AttendeeService {
 
         attendee = attendeeRepository.save(attendee);
         log.info("Participante inscrito com ID: {}", attendee.getId());
+        notificationPublisher.inscricaoCriada(event, attendee);
         return toResponseDto(attendee);
     }
 
@@ -97,6 +99,7 @@ public class AttendeeService {
                 .build();
 
         attendee = attendeeRepository.save(attendee);
+        notificationPublisher.inscricaoCriada(event, attendee);
         return toResponseDto(attendee);
     }
 

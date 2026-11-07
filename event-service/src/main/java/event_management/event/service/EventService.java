@@ -6,6 +6,7 @@ import event_management.event.dto.EventResponseDto;
 import event_management.event.enums.EventStatus;
 import event_management.common.dto.UsuarioAutenticado;
 import event_management.common.enums.RolesType;
+import event_management.event.model.Attendee;
 import event_management.event.model.Category;
 import event_management.event.model.Event;
 import event_management.event.repository.AttendeeRepository;
@@ -23,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -32,6 +34,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final AttendeeRepository attendeeRepository;
+    private final NotificationPublisher notificationPublisher;
 
     public Page<EventResponseDto> listar(Long categoriaId, EventStatus status,
                                           LocalDateTime dataInicio, LocalDateTime dataFim,
@@ -133,6 +136,13 @@ public class EventService {
 
         event.setStatus(dto.getStatus());
         event = eventRepository.save(event);
+
+        if (dto.getStatus() == EventStatus.CANCELLED) {
+            List<String> emails = attendeeRepository.findByEventoId(id).stream()
+                    .map(Attendee::getEmail)
+                    .toList();
+            notificationPublisher.eventoCancelado(event, emails);
+        }
         return toResponseDto(event);
     }
 
