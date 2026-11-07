@@ -3,6 +3,7 @@ package event_management.auth.controller;
 import event_management.auth.dto.LoginRequestDto;
 import event_management.auth.dto.RegisterRequestDto;
 import event_management.auth.dto.TokenResponseDto;
+import event_management.auth.dto.UserResponseDto;
 import event_management.auth.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,5 +54,11 @@ public class AuthController {
     @GetMapping("/validate")
     public ResponseEntity<Void> validate() {
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Usuário logado")
+    @GetMapping("/me")
+    public UserResponseDto me(Authentication authentication) {
+        return authenticationService.me(authentication.getName());
     }
 }

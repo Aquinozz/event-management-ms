@@ -5,6 +5,7 @@ import event_management.auth.config.TokenProvider;
 import event_management.auth.dto.LoginRequestDto;
 import event_management.auth.dto.RegisterRequestDto;
 import event_management.auth.dto.TokenResponseDto;
+import event_management.auth.dto.UserResponseDto;
 import event_management.common.enums.RolesType;
 import event_management.auth.model.RolesEntity;
 import event_management.auth.model.Users;
@@ -85,5 +86,11 @@ public class AuthenticationService {
             tokenBlacklist.invalidate(token.substring(7));
         }
         log.info("Logout realizado com sucesso");
+    }
+
+    public UserResponseDto me(String email) {
+        return userRepository.findByEmail(email)
+                .map(UserResponseDto::from)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
     }
 }
